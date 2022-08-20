@@ -1,0 +1,34 @@
+﻿@{
+    Layout = null;
+}
+<table id="ReporteVehiculos" class="table table-bordered table-responsive">
+    <thead>
+        <tr>
+            <th>Num. Placa</th>
+            <th>Tiempo Estacionado (Min.)</th>
+            <th>Tipo de Vehiculo</th>
+            <th>Tarifa($ Mx)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var DatosOut in Model)
+            {
+                <tr>
+                    <td>@DatosOut.NumeroPlaca</td>
+                    <td>@DatosOut.TiempoE</td>
+                    <td>@DatosOut.Tipo</td>
+                    <td>@DatosOut.Importe</td>
+                </tr>
+            }
+
+        }
+        else
+        { 
+            <tr>
+                <td><p>No hay datos por mostrar</p></td>
+            </tr>
+        }
+    </tbody>
+</table>

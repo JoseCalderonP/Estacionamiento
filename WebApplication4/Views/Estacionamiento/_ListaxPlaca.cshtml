@@ -1,0 +1,26 @@
+﻿@{
+    Layout = null;
+}
+<table class="table table-bordered table-responsive" data-show-export="true">
+    <thead>
+        <tr>
+            <th>Numero de Placa</th>
+            <th>Tipo</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Datos in Model)
+        {
+            if (Datos.Hora_Out == Datos.Hora_In)
+            {
+                <tr>
+                    <td>@Datos.NumeroPlaca</td>
+                    <td>@Datos.Tipo</td>
+                    <td>
+                        <button class="btn-success btn-block" style="width:100%;height:100%" onclick="RegSalidaInfo(@Datos.Id)">Registrar Salida</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

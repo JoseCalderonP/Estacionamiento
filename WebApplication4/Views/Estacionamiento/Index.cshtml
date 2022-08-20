@@ -1,0 +1,474 @@
+﻿@using WebApplication4.Models
+@{
+    Layout = null;
+    ViewBag.Title = "Estacionamiento";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <a class="navbar-brand" onclick="AgregarTipo()" style="cursor:pointer">Agregar nuevo tipo de vehiculo</a>
+                    </div>
+                    <div class="col">
+                        <a class="navbar-brand" style="cursor:pointer" onclick="ReporteFecha()">Reporte</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container">
+        <div>
+            <h2>Agregar Nueva Vehiculo</h2>
+            <form>
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label">Placa del Vehiculo</label>
+                        <input id="NumPlaca" type="text" class="form-control">
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Tipo de Vehiculo</label>
+                        <select class="form-select" id="ddTipVehiculo" data-live-search="true">
+                            <option selected> </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label">Fecha De Entrada/Hora De Entrada: </label>
+                        <a id="FechaActual"></a><a id="HoraEntrada"></a>
+                    </div>
+                </div>
+                <div class="row py-2">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary btn-block" style="width:100%;height:100%" onclick="RegEntrada()">Registrar Entrada</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <h3>Listado vehiculos de ultimos 10 Vehiculos</h3>
+        <div class="row">
+            <div class="col col-lg">
+                <label class="form-label">Buscar numero de placa</label>
+                <input type="text" class="form-control" onkeyup="BuscaPlaca(this.value)">
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col">
+                <div id="tablaListaPlacas">
+                    <table class="table table-bordered table-responsive" data-show-export="true">
+                        <thead>
+                            <tr>
+                                <th>Numero de Placa</th>
+                                <th>Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var Datos in Model)
+                            {
+                                if (Datos.Hora_Out == Datos.Hora_In)
+                                {
+                                    <tr>
+                                        <td>@Datos.NumeroPlaca</td>
+                                        <td>@Datos.Tipo</td>
+                                        <td>
+                                            <button class="btn-success btn-block" style="width:100%;height:100%" onclick="RegSalidaInfo(@Datos.Id)">Registrar Salida</button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalReportes" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Reporte</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <label class="form-label">Fecha</label>
+                            <input id="findFecha" type="date" class="form-control">
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Hora</label>
+                            <input id="findHora" type="time" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row py-1">
+                        <button type="button" class="btn btn-block btn-primary" onclick="BuscarXfecha()">Filtrar</button>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-secondary" onclick="LimpiarFiltro()">Limpiar Filtro</button>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row-px-4 py-2">
+                        <div id="TableLista">
+                            <table id="ReporteVehiculos" class="table table-bordered table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>Num. Placa</th>
+                                        <th>Tiempo Estacionado (Min.)</th>
+                                        <th>Tipo de Vehiculo</th>
+                                        <th>Tarifa($ Mx)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var DatosOut in Model)
+                                    {
+                                        if (DatosOut.Hora_In != DatosOut.Hora_Out)
+                                        {
+                                            <tr>
+                                                <td>@DatosOut.NumeroPlaca</td>
+                                                <td>@DatosOut.TiempoE</td>
+                                                <td>@DatosOut.Tipo</td>
+                                                <td>@DatosOut.Importe</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalNuevoTipoVehiculo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title modal-di" id="exampleModalLabel">Agregar nuevo tipo de Vehiculo</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label">Nuevo tipo de vehiculo</label>
+                                <input id="newTipoV" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label">¿Incluye tarifa?</label>
+                                <div>
+                                    <input type="radio" id="Si" name="Tarifa" value="1" onclick="TarifaVal(this.id)">
+                                    <label for="Si">Si</label>
+                                    <input type="radio" id="No" name="Tarifa" value="2" onclick="TarifaVal(this.id)">
+                                    <label for="No">No</label>
+                                </div>
+                            </div>
+                            <div class="col" id="ColTarifa" hidden>
+                                <label class="form-label">Tarifa por minuto (Mx)</label>
+                                <input id="newTarifaV" type="number" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="AgregarTipoVT()">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalRegSalida" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title modal-di" id="exampleModalLabel">Salida de Vehiculo</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <form>
+                        <div class="row">
+                            <div class="col">
+                                <label id="OutIdVehiculo" hidden></label>
+                                <label class="form-label">Placas: </label>
+                                <label id="outPlaca" type="text">...</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label">Tipo: </label>
+                                <label id="outTipo" type="text">...</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label">Entrada: </label>
+                                <label id="InTiempo" type="text">... min</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label">Salida: </label>
+                                <label id="outTiempo" type="text">... min</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label">Tiempo en minutos: </label>
+                                <label id="TimeMinutos" type="text">... min</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label">Tarifa: </label>
+                                <label id="outTarifa" type="text">0.00</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="RegSalida()">Registrar Salida</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+</body>
+</html>
+
+<script>
+    cargaTipoVehiculo();
+    $(document).ready(function () {
+        verHora();
+        fechaHoy();
+    });
+
+    function BuscaPlaca(placa){
+        $.ajax({
+                type: 'POST',
+                url: '@Url.Action("_ListaxPlaca", "Estacionamiento")',
+                data: { placa: placa},
+                success: function (html) {
+                    $("#tablaListaPlacas").html("");
+                    $("#tablaListaPlacas").append(html);
+                }
+        });
+    }
+
+    function fechaHoy() {
+        date = new Date();
+        year = date.getFullYear();
+        month = date.getMonth() + 1;
+        day = date.getDate();
+        document.getElementById("FechaActual").innerHTML = day + "/" + month + "/" + year;
+    }
+
+    function verHora() {
+        myDate = new Date();
+        hours = myDate.getHours();
+        minutes = myDate.getMinutes();
+        seconds = myDate.getSeconds();
+        if (hours < 10) hours = 0 + hours;
+
+        if (minutes < 10) minutes = "0" + minutes;
+
+        $("#HoraEntrada").text(" - " + hours + ":" + minutes);
+        setTimeout("verHora()", 1000);
+    }
+
+    function cargaTipoVehiculo() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("getTipoVehiculos", "Estacionamiento")',
+            success: function (data) {
+                //console.log(data);
+                document.getElementById("ddTipVehiculo").innerHTML = "";
+                $.each(data, function (index, itemData) {
+                    var option = new Option(itemData.Tipo, itemData.Tipo);
+                    document.getElementById("ddTipVehiculo").add(option);
+                });
+            }
+        });
+    }
+
+    function AgregarTipo() {
+        $('#modalNuevoTipoVehiculo').modal('show');
+    }
+
+    function AgregarTipoVT() {
+        var CostoTarifa = 0;
+        var TipoTarifa = document.querySelector('input[name="Tarifa"]:checked').value;
+        console.log(TipoTarifa);
+        var TipoVehiculo = document.getElementById("newTipoV").value;
+        if (TipoTarifa == 1) {
+            CostoTarifa = document.getElementById("newTarifaV").value;
+        }
+        console.log(CostoTarifa);
+        if (TipoVehiculo == "" && (CostoTarifa == "" && TipoTarifa == 1)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Llene correctamente el formulario'
+            });
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("setNewTipoVehiculo", "Estacionamiento")',
+            data: { TipoVehiculo: TipoVehiculo, CostoTarifa: CostoTarifa},
+            datatype: 'text',
+            success: function (data) {
+                Swal.fire({
+                    icon: data.Tipo,
+                    title: data.Mensaje,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                cargaTipoVehiculo();
+                setInterval("location.reload()", 1500);
+            }
+        });
+    }
+
+    function TarifaVal(valor) {
+        if (valor == "Si") {
+            document.getElementById("ColTarifa").removeAttribute("hidden");
+        } else {
+            document.getElementById("ColTarifa").setAttribute("hidden","");
+        }
+    }
+
+    function ReporteFecha() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("getReporteSalida", "Estacionamiento")',
+            datatype: 'text',
+            success: function (data) {
+                console.log(data);
+                $('#modalReportes').modal('show');
+            }
+        });
+    }
+
+    function RegEntrada() {
+        var NumeroPlaca = document.getElementById('NumPlaca').value;
+        var TipoVehiculo = document.getElementById('ddTipVehiculo').value;
+        if (NumeroPlaca == "") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Agrege el numero de Placa'
+            });
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("setEntradaVehiculo", "Estacionamiento")',
+            data: { NumeroPlaca: NumeroPlaca, TipoVehiculo: TipoVehiculo},
+            datatype: 'text',
+            success: function (data) {
+                //console.log(html.Id_Impresora);
+                //console.log(html.Num_Empleado);
+                Swal.fire({
+                    icon: data.Tipo,
+                    title: data.Mensaje,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                setInterval("location.reload()", 1500);
+            }
+        });
+    }
+
+    function RegSalidaInfo(IdReg) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("getSalidaVehiculo", "Estacionamiento")',
+            data: { IdReg: IdReg},
+            datatype: 'text',
+            success: function (data) {
+                document.getElementById("OutIdVehiculo").innerHTML = data.Id;
+                document.getElementById("outPlaca").innerHTML = data.NumeroPlaca;
+                document.getElementById("outTipo").innerHTML = data.Tipo;
+                document.getElementById("InTiempo").innerHTML = data.Hora_In;
+                document.getElementById("outTiempo").innerHTML = data.Hora_Out;
+                document.getElementById("TimeMinutos").innerHTML = data.TiempoE;
+                document.getElementById("outTarifa").innerHTML = "$"+data.Importe + " Mx";
+                $('#modalRegSalida').modal('show');
+            }
+        });
+    }
+
+    function RegSalida() {
+        var IdSalidaVehiculo = document.getElementById("OutIdVehiculo").innerHTML;
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("setSalidaVehiculo", "Estacionamiento")',
+            data: { IdSalidaVehiculo: IdSalidaVehiculo},
+            datatype: 'text',
+            success: function (data) {
+                Swal.fire({
+                    icon: data.Tipo,
+                    title: data.Mensaje,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                setInterval("location.reload()", 1500);
+            }
+        });
+    }
+
+    function BuscarXfecha() {
+        var FxH = document.getElementById('findFecha').value + ' ' + document.getElementById('findHora').value
+        console.log(FxH);
+        $.ajax({
+                type: 'POST',
+                url: '@Url.Action("_ListaxFecha", "Estacionamiento")',
+                data: { FxH: FxH},
+                success: function (html) {
+                    $("#TableLista").html("");
+                    $("#TableLista").append(html);
+            }
+        });
+    }
+
+    function LimpiarFiltro() {
+        document.getElementById('findFecha').value = '';
+        document.getElementById('findHora').value = '';
+        var FxH = '';
+        $.ajax({
+                type: 'POST',
+                url: '@Url.Action("_ListaxFecha", "Estacionamiento")',
+                data: { FxH: FxH},
+                success: function (html) {
+                    $("#TableLista").html("");
+                    $("#TableLista").append(html);
+            }
+            });
+    }
+
+</script>
