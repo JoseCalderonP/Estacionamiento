@@ -29,4 +29,8 @@ Una vez realizado ese cambio sobre la solucion **WebApplication4** hay que dar c
 ![image](https://user-images.githubusercontent.com/31561913/185725519-32564b48-00b2-4125-b3d5-e3cf6207106b.png)
 
 
+# Video De Muestra
+
+![markdownify](https://user-images.githubusercontent.com/31561913/197839781-ac1caef2-e7b5-45a5-ae80-7d1580d9f7f7.gif)
+
 
