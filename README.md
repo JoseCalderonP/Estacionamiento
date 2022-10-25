@@ -29,8 +29,23 @@ Una vez realizado ese cambio sobre la solucion **WebApplication4** hay que dar c
 ![image](https://user-images.githubusercontent.com/31561913/185725519-32564b48-00b2-4125-b3d5-e3cf6207106b.png)
 
 
-# Video De Muestra
+# Caputras De Muestra
 
-![markdownify](https://user-images.githubusercontent.com/31561913/197839781-ac1caef2-e7b5-45a5-ae80-7d1580d9f7f7.gif)
+Agregar Vehiculo Nuevo
+
+https://user-images.githubusercontent.com/31561913/197843089-0eb3eb92-62ef-4052-ae15-d12103c0ab58.mp4
+
+Registra salida que muestra un resumen del total a pagar (si es necesario)
+
+https://user-images.githubusercontent.com/31561913/197843548-6728b5b6-f243-454a-8358-fd0bbc53c604.mp4
+
+Agrega Nuevo tipo de vehiculo o tarica si es que incluye tarica o no
+
+![NewTipo1](https://user-images.githubusercontent.com/31561913/197847041-bcfe914e-e4b4-4e2b-aa29-7107497d9861.PNG)
+![NewTipo2](https://user-images.githubusercontent.com/31561913/197847045-441a30ea-57c8-4e95-a15d-ed4c718f7e2f.PNG)
+
+Reporte de salidas, donde ser puede filtrar las salidas de vehiculos por fecha y hora exacta
+
+![reporte](https://user-images.githubusercontent.com/31561913/197847289-84037d8e-7a88-442b-b1e7-fea8b341c1b5.PNG)
 
 
